@@ -9,7 +9,7 @@ The algorithms were tested on two MuJoCo Gym environments :
 More information can be found in the report.
 
 <p align="center">
-<img src="https://user-images.githubusercontent.com/33131887/213513885-cf288887-ac41-48c1-aaf2-54c8cc3c851c.gif" width="320" height="320"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <img src="https://user-images.githubusercontent.com/33131887/213512242-33cba048-89f2-41a7-be7e-4f1e35adc398.gif" width="320" height="320"/>
+<img src="https://user-images.githubusercontent.com/33131887/213513885-cf288887-ac41-48c1-aaf2-54c8cc3c851c.gif" width="320" height="320"/> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <img src="https://user-images.githubusercontent.com/33131887/213512242-33cba048-89f2-41a7-be7e-4f1e35adc398.gif" width="320" height="320"/>
 </p>
 
 ## How to use 
