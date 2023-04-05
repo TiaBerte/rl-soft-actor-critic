@@ -6,6 +6,7 @@ from typing import Tuple
 from model import Critic, Actor
 from replay_buffer import ReplayBuffer
 import numpy as np
+from collections import deque
 
 class SAC:
     def __init__(self, 
@@ -26,8 +27,7 @@ class SAC:
         self.alpha_tuning = args.alpha_tuning
 
         self.K = args.K # Number of value to average for Averaged-SAC
-        if self.K :
-          self.value_list = torch.zeros([self.batch_size, self.K]).to(self.device)
+        
 
         assert not (self.K and self.alpha_tuning), 'You are trying to use two variants of SAC at the same time!'
         
@@ -45,12 +45,21 @@ class SAC:
         # Actor
         self.actor = Actor(input_dim, n_actions, args.hidden_dim_p, 
                            args.log_std_min, args.log_std_max, scale, args.lr_p).to(self.device)
-
+        
+        
         # Critic and critic target
         self.critic = Critic(input_dim, n_actions, args.hidden_dim_q, args.lr_c).to(self.device)
         self.critic_t = Critic(input_dim, n_actions, args.hidden_dim_q, args.lr_c).to(self.device)
         for target_param, param in zip(self.critic_t.parameters(), self.critic.parameters()):
             target_param.data.copy_(param.data)
+        if self.K:
+            self.avg_critic_model = deque(max_len=self.K)
+            for i in range(self.K):
+                self.avg_critic_model.append(self.critic_t)
+
+        
+        for i in range(self.K):
+            self.avg_model.append()
 
         # Optimizers
         self.policy_optimizer = self.actor.optim
@@ -71,14 +80,17 @@ class SAC:
         
         with torch.no_grad():
             next_actions, next_logs_pi, _ = self.actor.action(next_states)
-            target_q1, target_q2 = self.critic_t(next_states, next_actions)
-            min_q_t = torch.min(target_q1, target_q2)
             if self.K:
-                new_value = self.alpha * next_logs_pi
-                self.value_list = torch.cat([self.value_list[:, 1:], new_value.view(-1, 1)], dim=1)
-                value = self.value_list.mean(axis=1).view(-1, 1)
+                min_q_t = 0
+                for i in range(self.K):
+                    target_q1, target_q2 = self.avg_critic_model[i](next_states, next_actions)
+                    min_q_t += torch.min(target_q1, target_q2)
+                min_q_t /= self.K
             else:
-                value = self.alpha * next_logs_pi
+                target_q1, target_q2 = self.critic_t(next_states, next_actions)
+                min_q_t = torch.min(target_q1, target_q2)
+
+            value = self.alpha * next_logs_pi
 
             target_q = rewards + (1 - dones) * self.gamma * (min_q_t - value)
 
