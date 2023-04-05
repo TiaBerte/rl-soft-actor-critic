@@ -57,9 +57,7 @@ class SAC:
             for i in range(self.K):
                 self.avg_critic_model.append(self.critic_t)
 
-        
-        for i in range(self.K):
-            self.avg_model.append()
+    
 
         # Optimizers
         self.policy_optimizer = self.actor.optim
