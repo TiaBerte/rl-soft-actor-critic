@@ -53,7 +53,7 @@ class SAC:
         for target_param, param in zip(self.critic_t.parameters(), self.critic.parameters()):
             target_param.data.copy_(param.data)
         if self.K:
-            self.avg_critic_model = deque(max_len=self.K)
+            self.avg_critic_model = deque(maxlen=self.K)
             for i in range(self.K):
                 self.avg_critic_model.append(self.critic_t)
 
