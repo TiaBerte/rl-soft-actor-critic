@@ -26,6 +26,11 @@ The default arguments are the ones used for my experiments.
                  automatically select the Averaged-SAC variant.
 ```
 
+
+
+
+
 ## Repo structure
 <em>checkpoints/</em> contains the last best checkpoint for each version of the algorithm for both the environments.   
 <em>buffer/</em> contains the buffer related to the last best checkpoints (Humanoid buffers were too big to be uploaded.).
+https://user-images.githubusercontent.com/33131887/233627279-234e7d7d-7b5c-4eb3-adf1-6b1e7c09527a.mp4
